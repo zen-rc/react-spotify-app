@@ -37,11 +37,29 @@ main {
   color: #4a2a6b;
   border-radius: 10px;
   text-align: left;
-  padding: 10px;
+  padding: 0px 10px 10px 10px;
+  /* padding-top: 0px; */
   display: flex;
   flex-direction: column; /* Changed to column layout to stack "Now Playing" and track list */
   justify-content: flex-start; /* Aligns the content from top to bottom */
   border: 2px #4a2a6b solid;
+  overflow: auto;
+  position: relative;
+}
+.mp3-player .screen .screenHeader {
+  position: sticky; /* Sticks to the top of the parent container */
+  top: 0; /* Sticks to the top of the parent */
+  background-color: #fff;
+  z-index: 10; /* Ensures it stays on top of other content */
+  padding: 3px;
+  padding-bottom: 10px; 
+  display: flex; /* Puts elements in a row */
+  align-items: center; /* Aligns items vertically */
+  gap: 10px;
+}
+.screenHeader img {
+  height: 7em; /* Matches image height to text size */
+  width: auto; /* Maintains aspect ratio */
 }
 .home{
   text-align: center;

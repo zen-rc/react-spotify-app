@@ -5,55 +5,8 @@ const Content = ({playlistData, setPlaylistData}) => {
     // console.log('entire playlist', playlistData)
     // console.log('entire songs', playlistData.tracks.items)
     const songsArray = playlistData.tracks.items
+    const playlistCover = playlistData.images[0].url
     // const linkedSongs = playlistData.tracks.items
-    const [playlist, setPlaylist] = useState([
-        {
-            id: 1,
-            title: 'Summer Rain',
-            artist: 'Carl Thomas',
-            emotion: 'Romantic',
-            subject: 'Love',
-            genre: 'R&B', //This SHOULD be an array (i think). I need to find a way to make an array of genres to be sorted and compared in the algorithmm
-            instruments: ['keys', 'drums', 'bass'],
-            bpm: 186,
-            key: 'F#',
-        },
-        {
-            id: 2,
-            title: 'Chamber of Reflection',
-            artist: 'Rich',
-            emotion: 'Melancholy',
-            subject: 'Introspection',
-            genre: 'Indie Folk',
-            instruments: ['keys'],
-            bpm: 131,
-            key: 'E minor'
-        },
-        {
-            id: 3,
-            title: 'Forgiveless',
-            artist: 'SZA',
-            emotion: 'Defiant',
-            subject: 'Forgiveness and revenge',
-            genre: 'R&B',
-            instruments: ['Beat production', 'sample loops'],
-            bpm: 80,
-            key: 'A'
-        },
-        {
-            id: 4,
-            title: 'Love Is Blind',
-            artist: 'Ravyn Lenae',
-            emotion: 'Yearning',
-            subject: 'Love',
-            genre: 'R&B',
-            instruments: ['Synth', 'bass guitar', 'drum machine'],
-            bpm: 100,
-            key: 'A'
-        }
-
-
-    ])
     // const keyOrder = {
     //     'C': 0, 'A minor': 0,       // C major and A minor are relative
     //     'G': 1, 'E minor': 1,       // G major and E minor are relative
@@ -69,43 +22,54 @@ const Content = ({playlistData, setPlaylistData}) => {
     //     'F': 11, 'D minor': 11      // F major and D minor are relative
     // };
 
+    console.log('this is the playlist', playlistData)
+
     function findingSongs(){
-        for(let i = 0; i < songsArray.length; i++) {
-            console.log('this is the track object', songsArray[i].track)
-            // console.log('this is the track object', songsArray[i].track.name)
+        for(let i = 0; i < playlistData.length; i++) {
+           if(songsArray[i].track.id == `2j1fFjWHCI9KJSwcuYAOyF`){
+            console.log('duplicate id')
+           }
+            // console.log('this is the track object', songsArray[i].track)
+
             // console.log('this is the track object', songsArray[i].track.artists[0].name)
 
         }
     }
     findingSongs()
-    const organizeSongs = () => {
-        console.log('sorting songs')
+    // const organizeSongs = () => {
+    //     console.log('sorting songs')
                     
-        console.log(playlist)
-        // const listSongs = [...playlist].sort((a, b) => {
-        //     //need to edit this to be compatible with an array of genres.
-        //     if (a.genre !== b.genre) {
-        //         return a.genre.localeCompare(b.genre)
-        //     }
+    //     console.log(playlist)
+    //     const listSongs = [...playlist].sort((a, b) => {
+    //         //need to edit this to be compatible with an array of genres.
+    //         if (a.genre !== b.genre) {
+    //             return a.genre.localeCompare(b.genre)
+    //         }
 
-        //     if (keyOrder[a.key] !== keyOrder[b.key]) {
-        //         return keyOrder[a.key] - keyOrder[b.key]
-        //     }
+    //         if (keyOrder[a.key] !== keyOrder[b.key]) {
+    //             return keyOrder[a.key] - keyOrder[b.key]
+    //         }
 
-        //     return b.bpm - a.bpm
-        // })
-    }
+    //         return b.bpm - a.bpm
+    //     })
+    // }
 
     return (
                 <div>
+                    <div className="screenHeader">
+                        <img src={playlistCover} alt="playlist cover"/>
+                        <h2>{playlistData.name}</h2>
+                    </div>
                     {/* find a way to put the image here */}
                     {/* playlistData.tracks.items */}
-                    <h2>Playlist: {playlistData.name}</h2>
+                    
                     <ol className='playlist' style={{ listStyleType: 'none' }}>
                         {
                             songsArray.map((song, i) => {
                                 return (
-                                    <li className="song" key={songsArray[i].track.id}>
+                                    <li className="song" 
+                                    key={songsArray[i].track.id}
+                                    >
                                         <p>{songsArray[i].track.name}</p>
                                         <p>{songsArray[i].track.artists[0].name}</p>
                                     </li>)
@@ -118,4 +82,4 @@ const Content = ({playlistData, setPlaylistData}) => {
     )
 }
 
-export default Content
+export default Content;
