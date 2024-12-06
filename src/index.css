@@ -1,11 +1,211 @@
 body {
+  background-color: #4a2a6b;
+  color: white;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 7%;
 }
+main {
+  /* background-color: #d7badf; */
+  color: #4a2a6b;
+  padding: 5%;
+}
+/* Basic Styles for MP3 Player */
+.mp3-player {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  background-color: #B097C6;
+  border-radius: 15px; /* Rounded corners */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* The Screen area where track info or album art is shown */
+.mp3-player .screen {
+  width: 100%;
+  min-height: 300px;
+  max-height: 500px;
+  background-color: #fff; /* Screen background */
+  color: #4a2a6b;
+  border-radius: 10px;
+  text-align: left;
+  padding: 10px;
+  display: flex;
+  flex-direction: column; /* Changed to column layout to stack "Now Playing" and track list */
+  justify-content: flex-start; /* Aligns the content from top to bottom */
+  border: 2px #4a2a6b solid;
+}
+.home{
+  text-align: center;
+}
+form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.form-group {
+  margin-bottom: 20px;
+}
+label {
+  display: block; /* Ensures it's on its own line */
+  margin-bottom: 8px; /* Adds space between label and input */
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+input {
+  width: 90%; /* Takes up the full width of the container */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  outline: none; /* Removes the default focus outline */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:hover {
+  border-color: #4a2a6b;
+}
+input:focus {
+  border-color: #B097C6;
+  box-shadow: 0 0 5px #B097C6;
+}
+/* Now Playing label */
+.mp3-player .now-playing {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px; /* Space between "Now Playing" and track list */
+}
+
+/* Playlist (track list) inside the screen */
+.mp3-player .playlist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* max-height: 450px; Space for a list of tracks */
+  overflow-y: auto; /* Allows scrolling for more tracks */
+  font-size: 14px;
+}
+
+/* Each track item */
+.mp3-player .playlist li {
+  border: 1px #4a2a6b solid;
+  color: #4a2a6b;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mp3-player .playlist li:hover {
+  background-color: #B097C6; /* Lighter on hover */
+}
+
+/* Buttons container below the screen */
+.mp3-player .buttons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin: 50px;
+}
+
+/* Individual buttons */
+.mp3-player .button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #4a2a6b;
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .mp3-player {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .mp3-player .screen {
+    min-height: 300px;
+    /* Reduced screen height for mobile */
+    font-size: 14px;
+  }
+
+  .mp3-player .buttons {
+    justify-content: space-between;
+  }
+
+  .mp3-player .button {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+
+  .mp3-player .playlist li {
+    font-size: 12px;
+  }
+}
+
+
+/* Basic Button Style */
+.organize-button {
+  padding: 12px 24px; /* Medium size padding */
+  font-size: 16px; /* Medium size font */
+  color: #fff; /* Background color */
+  background-color: #4a2a6b; /* Text color */
+  border-radius: 50%; /* Rounded edges */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: all 0.3s ease; /* Smooth transition for hover/active effects */
+  border: 2px solid #B097C6; /* Border color */
+  position: relative; /* Needed for inset shadow and movement */
+  width: 105px;
+  height: 105px;
+}
+
+button {
+  color: #fff;
+  background-color: transparent;
+  border: none;
+}
+/* Hover Effect */
+button:hover, .mp3-player .button:hover {
+  /* transform: scale(1.1); Slightly enlarge the button on hover */
+  /* background-color: transparent; */
+  color: #B097C6; /* Change text color to match border */
+  border-color: #B097C6; /* Keep border color the same on hover */
+}
+
+/* Press-in (active) Effect */
+button:active, .mp3-player .button:active {
+  transform: translateY(4px); /* Moves the button down to simulate a press */
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2); /* Adds an inset shadow for the pressed effect */
+  border-color: B097C6; /* Darken border color when pressed */
+  color: #B097C6; /* Darker background when pressed */
+  background-color: #4a2a6b; /* Change text color to white when pressed */
+}
+
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
