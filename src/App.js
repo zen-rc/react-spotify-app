@@ -4,6 +4,7 @@ import Home from './Home.js'
 import Footer from './Footer'
 import Buttons from './Buttons.js'
 import Rocket from './Rocket.js'
+import Webhooks from './Webhooks.js'
 import './App.css';
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
@@ -275,6 +276,8 @@ function App() {
                 setAudioFeatures={setAudioFeatures}
               />} />
               <Route path='/rocket' element={<Rocket/>}
+              />
+              <Route path='/webhooks' element={<Webhooks/>}
               />
             </Routes>
           </div>
