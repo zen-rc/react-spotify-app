@@ -229,3 +229,177 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* ROCKET CSS */
+/* Space container */
+.space-container {
+  background-color: lavender; /* Background color for container */
+  width: 100%; /* Full width of parent */
+  height: 100%; /* Full height of parent */
+  position: absolute; /* Position relative to the viewport */
+  top: 0;
+  left: 0;
+  overflow:visible; /* Prevent overflow */
+  display: flex; /* Center content */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+}
+
+/* Reset and base styles */
+
+
+/* body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+} */
+
+/* Rocket container and animation */
+.rocket-animation {
+  animation: rocketBounce 3s ease-in-out infinite; /* Make the rocket bounce */
+  padding: 10%;
+}
+
+.container {
+  margin: 20%; /* Add spacing below container */
+  position: relative; /* Position for transformations */
+  display: inline-block;
+   /* Inline container */
+  transform: rotate(60deg) scale(0.6); /* Rotate and scale container */
+}
+
+/* Rocket base styling */
+.rocket {
+  background-image: linear-gradient(purple 35%, white 0%, white); /* Gradient rocket body */
+  position: relative; /* Relative for internal positioning */
+  height: 225px; /* Increased by 20% (220px -> 264px) */
+  width: 140px; /* Increased by 20% (100px -> 120px) */
+  border-radius: 100% 100% 50% 50%; /* Oval shape */
+}
+
+/* Rocket window */
+.rocket .window {
+  height: 60px; /* Increased by 20% (50px -> 60px) */
+  width: 60px; /* Match height for circular shape */
+  background: #b0b0b0; /* Gray color */
+  border: 7px solid #848687; /* Gray border */
+  border-radius: 50%; /* Circular shape */
+  position: absolute; /* Positioned inside rocket */
+  top: 45%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%); /* Precisely center */
+}
+
+/* Rocket fins */
+.fin {
+  z-index: -5; /* Place behind the rocket body */
+  position: absolute; /* Positioned relative to rocket */
+  bottom: 20px; /* Attach to bottom of rocket */
+  height: 55px; /* Fixed fin height */
+  width: 90px; /* Increased by 20% (80px -> 96px) */
+  background: #00bdf2; /* Blue color */
+}
+
+.fin-left {
+  left: -54px; /* Adjusted position */
+  border-top-left-radius: 70%; /* Rounded top-left corner */
+  border-bottom-left-radius: 15%; /* Rounded bottom-left corner */
+}
+
+.fin-right {
+  right: -54px; /* Adjusted position */
+  border-top-right-radius: 70%; /* Rounded top-right corner */
+  border-bottom-right-radius: 15%; /* Rounded bottom-right corner */
+}
+
+/* Rocket fire animation */
+.orange {
+  position: absolute; /* Positioned relative to rocket */
+  bottom: -75px; /* Place fire below rocket */
+  width: 100%; /* Full width */
+  z-index: -99; /* Place behind rocket */
+  padding-bottom: 100%; /* Circular flame shape */
+  background: #ff6234; /* Orange color */
+  border-radius: 0 50% 50% 50%; /* Flame shape */
+  transform: rotate(-135deg); /* Angle the fire */
+  animation: fire 1s linear infinite alternate; /* Flickering animation */
+  animation-delay: 1s; /* Start with delay */
+}
+
+.yellow {
+  position: absolute;
+  bottom: -60px; /* Place yellow fire slightly higher */
+  z-index: -99;
+  left: 10%;
+  width: 80%; /* Slightly smaller than orange */
+  padding-bottom: 80%;
+  background: #ffb726; /* Yellow color */
+  border-radius: 0 75% 75% 75%; /* Rounded flame shape */
+  animation: fire 1s linear infinite alternate;
+}
+
+/* Background stars */
+.stars {
+  /* background: black */
+    /* url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png) repeat; */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -110; /* Place in background */
+}
+
+.twinkling {
+  width: 10000px; /* Extra wide for scrolling effect */
+  height: 100%; /* Full height */
+  /* background: transparent */
+    /* url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png") */
+    /* repeat; */
+  background-size: 1000px 1000px; /* Scale background pattern */
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -100; /* Behind other elements */
+  animation: move-background 20s linear infinite;
+}
+
+/* Keyframes for animations */
+
+/* Rocket bounce animation */
+@keyframes rocketBounce {
+  0%, 100% {
+    transform: translateY(0); /* Start at original position */
+  }
+  50% {
+    transform: translateY(-10%); /* Move upward */
+  }
+}
+
+/* Flickering fire animation */
+@keyframes fire {
+  0% {
+    opacity: 1; /* Fully visible */
+    transform: scale(1) rotate(-135deg); /* Start scale */
+  }
+  100% {
+    opacity: 0.8; /* Slightly dimmer */
+    transform: scale(0.9) rotate(-135deg); /* Slightly smaller */
+  }
+}
+
+/* Background movement animation */
+/* @keyframes move-background {
+  from {
+    transform: translate3d(0px, 0px, 0px);
+  }
+  to {
+    transform: translate3d(1000px, 0px, 0px);
+  }
+} */

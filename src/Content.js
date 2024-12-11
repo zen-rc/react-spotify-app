@@ -1,10 +1,9 @@
-import { useState } from 'react'
 
-const Content = ({playlistData, setPlaylistData}) => {
+const Content = ({playlistData, setPlaylistData, songsArray, setSongsArray, audioFeatures, setAudioFeatures}) => {
 
     // console.log('entire playlist', playlistData)
     // console.log('entire songs', playlistData.tracks.items)
-    const songsArray = playlistData.tracks.items
+    // const songsArray = playlistData.tracks.items
     const playlistCover = playlistData.images[0].url
     // const linkedSongs = playlistData.tracks.items
     // const keyOrder = {
@@ -22,20 +21,23 @@ const Content = ({playlistData, setPlaylistData}) => {
     //     'F': 11, 'D minor': 11      // F major and D minor are relative
     // };
 
-    console.log('this is the playlist', playlistData)
+// console.log('this is songsArray', songsArray)
+// console.log('this is audio features', audioFeatures)
+// console.log('these are the track ids', songsArray.map((element, i) => songsArray[i].track.id).join(',')
+// )
+    // function findingSongs(){
+    //     for(let i = 0; i < songsArray.length; i++) {
 
-    function findingSongs(){
-        for(let i = 0; i < playlistData.length; i++) {
-           if(songsArray[i].track.id == `2j1fFjWHCI9KJSwcuYAOyF`){
-            console.log('duplicate id')
-           }
-            // console.log('this is the track object', songsArray[i].track)
+    //        if(songsArray[i].track.id === `2j1fFjWHCI9KJSwcuYAOyF`){
+    //         console.log('duplicate id')
+    //        }
+    //         console.log('this is the track object', songsArray[i].track)
 
-            // console.log('this is the track object', songsArray[i].track.artists[0].name)
+    //         console.log('this is the track object', songsArray[i].track.artists[0].name)
 
-        }
-    }
-    findingSongs()
+    //     }
+    // }
+    // findingSongs()
     // const organizeSongs = () => {
     //     console.log('sorting songs')
                     

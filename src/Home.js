@@ -1,10 +1,10 @@
 
-function Home({playlistInput, setPlaylistInput, find, playlistData, setPlaylistData}) {
+function Home({ playlistInput, setPlaylistInput, find, playlistData, setPlaylistData}) {
     // this code vvvvvv doesn't catch all the errors
 
     //   this code ^^^^^ doesnt catch all the errors
-    console.log('this is the playlist input', playlistInput)
-    console.log('this is the playlist name', playlistData)
+    // console.log('this is the playlist input', playlistInput)
+    // console.log('this is the playlist name', playlistData)
     return (
         <div className="home">
             <h2>Welcome!</h2>
@@ -24,8 +24,8 @@ function Home({playlistInput, setPlaylistInput, find, playlistData, setPlaylistD
                 </form>
             </div>
 
-            <button type="button" onClick={find}>
-                Find
+            <button type="button" onClick={find} style={{color: "purple"}}>
+                Find Playlist
             </button>
 
             {/* Optionally display playlist data */}
