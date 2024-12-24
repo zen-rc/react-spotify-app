@@ -1,4 +1,4 @@
-function Rocket() {
+function Rocket({progress}) {
 
     return (
         <div className='space-container'>
@@ -6,6 +6,7 @@ function Rocket() {
                 <main className='container'>
                     <div className='rocket'>
                         <div className='window'></div>
+                        <span>{progress}</span>
                     </div>
                     <div className='fin-left fin'></div>
                     <div className='fin-right fin'></div>
@@ -16,8 +17,6 @@ function Rocket() {
                     </div>
                 </main>
             </div>
-            <div className="stars"></div>
-            <div className="twinkling"></div>
         </div>
     )
 }

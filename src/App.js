@@ -4,8 +4,8 @@ import Home from './Home.js'
 import Footer from './Footer'
 import Buttons from './Buttons.js'
 import Rocket from './Rocket.js'
-import Webhooks from './Webhooks.js'
 import './App.css';
+import Test from './Test.js'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
@@ -13,34 +13,11 @@ import { useState, useEffect } from 'react'
 
 function App() {
 
-// loop through the names and artists of songsArray
-// variables to hold title and artist
-// do an API request after extracting the title and artists, to get mbids
+  const [fetchTrigger, setFetchTrigger] = useState(false);
+  const [progress, setProgress] = useState()
 
-// useEffect(() => {
-//   console
-//   async function findAudioFeatures() {
-//     try {
-//       const response = await fetch(``)
-
-//       if(!response.ok){
-//         console.error('Not fetched')
-//         return
-//       }
-//       const data = await response.json();
-//       console.log('this is the data:', data)
-//     }
-//     catch(error) {
-//       console.error('Problem fetching')
-//     }
-//   }
-  
-//   findAudioFeatures()
-// }, [])
-
-
-  const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-  const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
+  const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
+  const SPOTIFY_CLIENT_SECRET = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
 
 
   const location = useLocation()
@@ -54,23 +31,21 @@ function App() {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
+          body: `grant_type=client_credentials&client_id=${SPOTIFY_CLIENT_ID}&client_secret=${SPOTIFY_CLIENT_SECRET}`,
         };
         const response = await fetch('https://accounts.spotify.com/api/token', authParameters);
-        console.log('https://accounts.spotify.com/api/token', authParameters)
         if (!response.ok) {
           throw new Error(`Error fetching access token: ${response.status}`);
         }
         const data = await response.json();
         setAccessToken(data.access_token);
-        console.log('Access token received:', data.access_token);
       } catch (err) {
         console.error('Error fetching access token:', err);
       }
     };
 
     fetchAccessToken();
-  }, [CLIENT_ID, CLIENT_SECRET]); // Dependency array ensures the effect runs when CLIENT_ID or CLIENT_SECRET changes
+  }, [SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET]); // Dependency array ensures the effect runs when CLIENT_ID or CLIENT_SECRET changes
 
 
   const [playlistInput, setPlaylistInput] = useState("");
@@ -98,7 +73,7 @@ function App() {
     if (storedPlaylistData) {
       setPlaylistData(JSON.parse(storedPlaylistData)); // Restore playlistData from localStorage
     }
-  }, [CLIENT_ID, CLIENT_SECRET]);
+  }, [SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET]);
 
   // Whenever the playlistInput or playlistData changes, update localStorage
   useEffect(() => {
@@ -150,11 +125,10 @@ function App() {
       console.log('Playlist data:', data);
 
       // Set playlist data in state
-      console.log('playlist about to be set')
       setPlaylistData(data);
       localStorage.setItem('playlistData', JSON.stringify(data));
-      console.log('playlist data set')
       setSongsArray(data.tracks.items)
+      console.log('this is songsArray', songsArray)
       localStorage.setItem('songData', JSON.stringify(data.tracks.items));
       // console.log('this is the songsArray')
     } catch (err) {
@@ -162,78 +136,97 @@ function App() {
     }
   }
 
-  const [audioFeatures, setAudioFeatures] = useState([]) //is not ever changing. how to
-  useEffect(() => {
+const base = "https://api.tunebat.com/api/tracks/search";
+const param = "term";
+const [fetchFeaturesTrigger, setFetchFeaturesTrigger] = useState(false);
+const [songsWithFeatures, setSongsWithFeatures] = useState([]);
 
-    const uniqueTrackIds = Array.from(new Set(songsArray.map((element, i) => songsArray[i].track.id))).join(',')
-    console.log('these are the songs', songsArray)
-    console.log('these are the track ids', uniqueTrackIds.length)
-    const fetchAudioFeatures = async () => {
-      try {
-        const response = await fetch(`https://api.spotify.com/v1/audio-features?ids=${uniqueTrackIds}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch audio features: ${response.status}`);
+useEffect(() => {
+  if (!fetchFeaturesTrigger) return; //false, dont do anything
+
+  const fetchFeatures = async () => {
+    console.log('About to fetch features');
+
+    const fetchSongFeatures = async () => {
+      const updatedFeatures = [...songsWithFeatures]; //the array of songs with features, will be kept in the updated Features array
+      let retryCount = 17; //amount of time before remaking a request
+
+      for (let i = 0; i < songsArray.length; i++) { //looping through songs
+        if (updatedFeatures[i] || updatedFeatures.includes(songsArray[i].track.id)) { //if this song already exists in the array, skip
+          continue;
         }
-        const songData = await response.json();
-        setAudioFeatures(songData.audio_features);
-      } catch (err) {
-        console.error("Error fetching audio features:", err);
+
+        const { name: title, artists } = songsArray[i].track;
+        const artist = artists[0].name;
+        const query = encodeURI(`${artist}-${title}`);
+        const url = `${base}?${param}=${query}`;
+
+        try {
+          // while (true) { //basically an infinite loop.
+            try {
+              const response = await fetch(url);
+              const text = await response.text();
+
+              const data = JSON.parse(
+                text
+                  .normalize("NFD")
+                  .replace(/[̀-\u036f]/g, "")
+                  .replace(/’/g, "'")
+              ).data.items;
+
+              while(!data) {
+                console.log('Data undefined. Retrying.');
+                await new Promise((resolve) => setTimeout(resolve, retryCount * 1000));
+                retryCount++;
+                // continue;
+              }
+
+              updatedFeatures[i] = data[0];
+              setProgress(i);
+              setSongsWithFeatures(updatedFeatures);
+
+              console.log(`Processed song #${i}: ${title} by ${artist}`, data[0]);
+              break;
+            } catch (e) {
+              if (e.response?.status === 429) {
+                console.log(`Request restricted. Retrying after ${retryCount} seconds`);
+                await new Promise((resolve) => setTimeout(resolve, retryCount * 1000));
+                retryCount++;
+              } else {
+                console.error('Unhandled error:', e);
+                throw e;
+              }
+            }
+          }
+      // }
+          catch (err) {
+          console.error(`Error fetching data for song at index ${i}:`, err);
+        }
       }
     };
 
-    if (uniqueTrackIds.length > 0 && accessToken) {
-      fetchAudioFeatures(); // Call the async function
+    try {
+      await fetchSongFeatures();
+      console.log('Done fetching features');
+    } catch (err) {
+      console.error('Error in fetching features:', err);
+    } finally {
+      setFetchFeaturesTrigger(false);
     }
-  }, [songsArray, accessToken]);
+  };
 
-// loop through the names and artists of songsArray
-// variables to hold title and artist
-// do an API request after extracting the title and artists, to get mbids
-// const url = `https://musicbrainz.org/ws/2/recording/?query=recording:"${encodeURIComponent(songTitle)}" AND artist:"${encodeURIComponent(artistName)}"&fmt=json`;
-
-// i need to push all mbids into an array
-// i need to a map  on the mbids in the Acoustic Brainz api to retrieve low-level data (for now)
-// i need to extract the audio features from Acoustic Brainz API and create a unique audiofeatures object, holding bpm, danceibility, etc
-// push this new object into songsArray
-// build algorithm using audio features
+  fetchFeatures();
+}, [fetchFeaturesTrigger, songsArray, songsWithFeatures]);
 
 
 
-  // THIS IS THE MUSIC   BRAINZ API/////
-  // const [musicData, setMusicData] = useState([])
-  // useEffect(() => {
-  //   const tracks = ''
-  //   const fetchMusicBrainzData = async () => {
-  //     try {
 
-  //       const response = await fetch(`https://acousticbrainz.org/${mbid}/low-level`,
-  //         {
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         }
-  //       );
-
-
-  //       if (!response.ok) {
-  //         throw new Error(`Error fetching access token: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       setMusicData(data);
-  //       console.log('audio data received:', data);
-  //     } catch (err) {
-  //       console.error('Error fetching audio data:', err);
-  //     }
-  //   };
-
-  //   fetchMusicBrainzData();
-  // }, [songsArray]);
-
-
+  // const bpm = data.data.items[0].b
+  // const key = data.data.items[0].k
+  // const camelot = data.data.items[0].camelot
+  // const energy = data.data.items[0].e
+  // const happiness = data.data.items[0].h
+  // const danceibility = data.data.items[0].da
 
 
 
@@ -259,6 +252,7 @@ function App() {
       <main>
         <div className="mp3-player">
           <div className='screen'>
+
             <Routes>
               <Route path='/' element={<Home
                 playlistInput={playlistInput}
@@ -268,21 +262,19 @@ function App() {
                 setPlaylistData={setPlaylistData}
               />} />
               <Route path='/content' element={<Content
+                fetchFeaturesTrigger={fetchFeaturesTrigger}
                 playlistData={playlistData}
-                setPlaylistData={setPlaylistData}
                 songsArray={songsArray}
-                setSongsArray={setSongsArray}
-                audioFeatures={audioFeatures}
-                setAudioFeatures={setAudioFeatures}
+                songsWithFeatures={songsWithFeatures}
+                progress={progress}
               />} />
-              <Route path='/rocket' element={<Rocket/>}
-              />
-              <Route path='/webhooks' element={<Webhooks/>}
-              />
+              <Route path='rocket' element={<Rocket/>}/>
             </Routes>
+
           </div>
           <Buttons playlistData={playlistData}
-          setplaylistData={setPlaylistData}
+            setplaylistData={setPlaylistData}
+            setFetchFeaturesTrigger={setFetchFeaturesTrigger}
           />
         </div>
       </main>

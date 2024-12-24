@@ -233,13 +233,17 @@ code {
 /* ROCKET CSS */
 /* Space container */
 .space-container {
-  background-color: lavender; /* Background color for container */
+  background-image: url(solarSystem.gif);
+ background-size: auto;
+-webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  /* background-color: lavender; Background color for container */
   width: 100%; /* Full width of parent */
   height: 100%; /* Full height of parent */
   position: absolute; /* Position relative to the viewport */
   top: 0;
   left: 0;
-  overflow:visible; /* Prevent overflow */
+  overflow: visible; /* Prevent overflow */
   display: flex; /* Center content */
   justify-content: center; /* Horizontal centering */
   align-items: center; /* Vertical centering */
@@ -263,6 +267,7 @@ code {
 .rocket-animation {
   animation: rocketBounce 3s ease-in-out infinite; /* Make the rocket bounce */
   padding: 10%;
+  flex:content;
 }
 
 .container {
@@ -270,7 +275,7 @@ code {
   position: relative; /* Position for transformations */
   display: inline-block;
    /* Inline container */
-  transform: rotate(60deg) scale(0.6); /* Rotate and scale container */
+  transform: scaleX(-1) rotate(60deg) scale(0.6); /* Rotate and scale container */
 }
 
 /* Rocket base styling */
