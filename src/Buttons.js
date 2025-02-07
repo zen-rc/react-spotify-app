@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useState } from "react"
+// import { useState } from "react"
 
 function Buttons({ playlistData, setPlaylistData, setFetchFeaturesTrigger }) {
 
@@ -15,7 +15,6 @@ function Buttons({ playlistData, setPlaylistData, setFetchFeaturesTrigger }) {
                         alert('Please input a valid playlist')
                     }
                     else { 
-                        setFetchFeaturesTrigger(true)
                         navigate('/content') }
                 }
                 }

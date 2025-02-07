@@ -1,63 +1,47 @@
+import React, { useEffect, useState } from "react";
 
-import { useState, useEffect } from 'react'
-import Rocket from './Rocket'
+const ParallelProcessingExample = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-function Test({ songsArray, playlistInput, setPlaylistInput, find, playlistData, setPlaylistData}) {
+    const items = [
+        { id: 1, name: "Item 1" },
+        { id: 2, name: "Item 2" },
+        { id: 3, name: "Item 3" },
+    ];
 
-    // function findFeatures() {
-        // songsArray.map
-    // }
-    const fakePause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const responses = await Promise.all(
+                    items.map((item) =>
+                        fetch(`https://jsonplaceholder.typicode.com/posts/${item.id}`)
+                            .then((response) => response.json())
+                    )
+                );
+                setData(responses);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
-
-  const handleButtonClick = async () => {
-    setLoading(true);
-    await fakePause(2000); // Simulate a 2-second pause
-    setLoading(false);
-  };
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
-    
-        <div className="home">
-            <h2>Welcome!</h2>
-            <p>This is the test component</p>
-            <div className="form-group">
-                <form onSubmit={(e) => e.preventDefault()}> {/* Prevent form submission */}
-                    <label htmlFor="spotify-link">Enter Link Below:</label>
-                    <input
-                        placeholder="Spotify link here"
-                        type="url"
-                        name="spotify-link"
-                        id="spotify-link"
-                        required
-                        value={playlistInput} // Controlled input value
-                        onChange={(e) => setPlaylistInput(e.target.value)} // Update state on input change
-                    />
-                </form>
-                <section>
-                    {loading ? <Rocket/> : <span>Number of songs {songsArray.length}</span>}
-                </section>
-            </div>
-
-            <button type="button" onClick={find} style={{color: "purple"}}>
-                Find Playlist
-            </button>
-            <button style={{color: "purple"}} onClick={handleButtonClick} disabled={loading}> Find Features
-
-      </button>
-
-            {/* Optionally display playlist data */}
-            {playlistData && (
-                <div>
-                    <h3>Playlist Details</h3>
-                    <p>Title: {playlistData.name}</p>
-                    <p>Number of tracks: {playlistData.tracks.total}</p>
-                    {/* Render other details as needed */}
-                </div>
-            )}
+        <div>
+            <ul>
+                {data.map((item) => (
+                    <li key={item.id}>{item.title}</li>
+                ))}
+            </ul>
         </div>
     );
-}
+};
 
-export default Test;

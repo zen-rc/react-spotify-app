@@ -5,16 +5,12 @@ import Footer from './Footer'
 import Buttons from './Buttons.js'
 import Rocket from './Rocket.js'
 import './App.css';
-import Test from './Test.js'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 
 
 function App() {
-
-  const [fetchTrigger, setFetchTrigger] = useState(false);
-  const [progress, setProgress] = useState()
 
   const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
   const SPOTIFY_CLIENT_SECRET = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
@@ -126,123 +122,15 @@ function App() {
 
       // Set playlist data in state
       setPlaylistData(data);
-      localStorage.setItem('playlistData', JSON.stringify(data));
       setSongsArray(data.tracks.items)
       console.log('this is songsArray', songsArray)
+
+      localStorage.setItem('playlistData', JSON.stringify(data));
       localStorage.setItem('songData', JSON.stringify(data.tracks.items));
-      // console.log('this is the songsArray')
     } catch (err) {
       console.error('Error fetching playlist:', err);
     }
   }
-
-const base = "https://api.tunebat.com/api/tracks/search";
-const param = "term";
-const [fetchFeaturesTrigger, setFetchFeaturesTrigger] = useState(false);
-const [songsWithFeatures, setSongsWithFeatures] = useState([]);
-
-useEffect(() => {
-  if (!fetchFeaturesTrigger) return; //false, dont do anything
-
-  const fetchFeatures = async () => {
-    console.log('About to fetch features');
-
-    const fetchSongFeatures = async () => {
-      const updatedFeatures = [...songsWithFeatures]; //the array of songs with features, will be kept in the updated Features array
-      let retryCount = 17; //amount of time before remaking a request
-
-      for (let i = 0; i < songsArray.length; i++) { //looping through songs
-        if (updatedFeatures[i] || updatedFeatures.includes(songsArray[i].track.id)) { //if this song already exists in the array, skip
-          continue;
-        }
-
-        const { name: title, artists } = songsArray[i].track;
-        const artist = artists[0].name;
-        const query = encodeURI(`${artist}-${title}`);
-        const url = `${base}?${param}=${query}`;
-
-        try {
-          // while (true) { //basically an infinite loop.
-            try {
-              const response = await fetch(url);
-              const text = await response.text();
-
-              const data = JSON.parse(
-                text
-                  .normalize("NFD")
-                  .replace(/[̀-\u036f]/g, "")
-                  .replace(/’/g, "'")
-              ).data.items;
-
-              while(!data) {
-                console.log('Data undefined. Retrying.');
-                await new Promise((resolve) => setTimeout(resolve, retryCount * 1000));
-                retryCount++;
-                // continue;
-              }
-
-              updatedFeatures[i] = data[0];
-              setProgress(i);
-              setSongsWithFeatures(updatedFeatures);
-
-              console.log(`Processed song #${i}: ${title} by ${artist}`, data[0]);
-              break;
-            } catch (e) {
-              if (e.response?.status === 429) {
-                console.log(`Request restricted. Retrying after ${retryCount} seconds`);
-                await new Promise((resolve) => setTimeout(resolve, retryCount * 1000));
-                retryCount++;
-              } else {
-                console.error('Unhandled error:', e);
-                throw e;
-              }
-            }
-          }
-      // }
-          catch (err) {
-          console.error(`Error fetching data for song at index ${i}:`, err);
-        }
-      }
-    };
-
-    try {
-      await fetchSongFeatures();
-      console.log('Done fetching features');
-    } catch (err) {
-      console.error('Error in fetching features:', err);
-    } finally {
-      setFetchFeaturesTrigger(false);
-    }
-  };
-
-  fetchFeatures();
-}, [fetchFeaturesTrigger, songsArray, songsWithFeatures]);
-
-
-
-
-  // const bpm = data.data.items[0].b
-  // const key = data.data.items[0].k
-  // const camelot = data.data.items[0].camelot
-  // const energy = data.data.items[0].e
-  // const happiness = data.data.items[0].h
-  // const danceibility = data.data.items[0].da
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   return (
@@ -262,19 +150,20 @@ useEffect(() => {
                 setPlaylistData={setPlaylistData}
               />} />
               <Route path='/content' element={<Content
-                fetchFeaturesTrigger={fetchFeaturesTrigger}
+                // fetchFeaturesTrigger={fetchFeaturesTrigger}
                 playlistData={playlistData}
                 songsArray={songsArray}
-                songsWithFeatures={songsWithFeatures}
-                progress={progress}
+                setSongsArray={setSongsArray}
+                // songsWithFeatures={songsWithFeatures}
+                // progress={progress}
               />} />
-              <Route path='rocket' element={<Rocket/>}/>
+              <Route path='rocket' element={<Rocket />} />
             </Routes>
 
           </div>
           <Buttons playlistData={playlistData}
             setplaylistData={setPlaylistData}
-            setFetchFeaturesTrigger={setFetchFeaturesTrigger}
+            // setFetchFeaturesTrigger={setFetchFeaturesTrigger}
           />
         </div>
       </main>

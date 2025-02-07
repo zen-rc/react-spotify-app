@@ -57,7 +57,7 @@ main {
   align-items: center; /* Aligns items vertically */
   gap: 10px;
 }
-.screenHeader img {
+.screenHeader img, img {
   height: 7em; /* Matches image height to text size */
   width: auto; /* Maintains aspect ratio */
 }
@@ -373,6 +373,11 @@ code {
   bottom: 0;
   z-index: -100; /* Behind other elements */
   animation: move-background 20s linear infinite;
+}
+
+li>img {
+  float:inline-start;
+  margin-right: 1em;
 }
 
 /* Keyframes for animations */
